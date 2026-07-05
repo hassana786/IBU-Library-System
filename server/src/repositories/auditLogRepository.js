@@ -1,4 +1,5 @@
 const prisma = require('../config/database');
+const { SAFE_USER_SELECT } = require('../utils/safeUserSelect');
 
 class AuditLogRepository {
   async create(userId, action, module, details, ipAddress) {
@@ -17,7 +18,7 @@ class AuditLogRepository {
     return await prisma.auditLog.findMany({
       skip,
       take,
-      include: { user: true },
+      include: { user: { select: SAFE_USER_SELECT } },
       orderBy: { createdAt: 'desc' },
     });
   }
@@ -40,7 +41,7 @@ class AuditLogRepository {
       where: { module },
       skip,
       take,
-      include: { user: true },
+      include: { user: { select: SAFE_USER_SELECT } },
       orderBy: { createdAt: 'desc' },
     });
   }

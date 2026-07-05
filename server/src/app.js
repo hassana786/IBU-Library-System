@@ -19,7 +19,8 @@ const auditLogRoutes = require('./routes/auditLogRoutes');
 const app = express();
 
 // Middleware
-app.use(cors());
+const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:3000').split(',');
+app.use(cors({ origin: allowedOrigins }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

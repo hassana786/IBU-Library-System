@@ -1,11 +1,12 @@
 const prisma = require('../config/database');
+const { SAFE_USER_SELECT } = require('../utils/safeUserSelect');
 
 class FineRepository {
   async create(data) {
     return await prisma.fine.create({
       data,
       include: {
-        user: true,
+        user: { select: SAFE_USER_SELECT },
       },
     });
   }
@@ -14,7 +15,7 @@ class FineRepository {
     return await prisma.fine.findUnique({
       where: { id },
       include: {
-        user: true,
+        user: { select: SAFE_USER_SELECT },
       },
     });
   }
@@ -54,7 +55,7 @@ class FineRepository {
       where: { id },
       data,
       include: {
-        user: true,
+        user: { select: SAFE_USER_SELECT },
       },
     });
   }
@@ -64,10 +65,18 @@ class FineRepository {
       skip,
       take,
       include: {
-        user: true,
+        user: { select: SAFE_USER_SELECT },
       },
       orderBy: { createdAt: 'desc' },
     });
+  }
+
+  async countAll() {
+    return await prisma.fine.count();
+  }
+
+  async countByUserId(userId) {
+    return await prisma.fine.count({ where: { userId } });
   }
 
   async countUnpaid() {

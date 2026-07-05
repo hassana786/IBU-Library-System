@@ -45,7 +45,7 @@ class FineController {
     try {
       const { fineId } = req.body;
 
-      const fine = await fineService.payFine(parseInt(fineId));
+      const fine = await fineService.payFine(parseInt(fineId), req.user);
 
       await auditLogService.logAction(
         req.user.id,

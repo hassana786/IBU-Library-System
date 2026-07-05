@@ -29,9 +29,13 @@ class BookService {
     }
 
     const books = await bookRepository.search(query, skip, take);
+    const total = await bookRepository.countSearch(query);
+
     return {
       books,
-      total: books.length,
+      total,
+      page: Math.floor(skip / take) + 1,
+      pages: Math.ceil(total / take),
     };
   }
 
@@ -45,7 +49,7 @@ class BookService {
     }
 
     const books = await bookRepository.findByCategory(categoryId, skip, take);
-    const total = books.length;
+    const total = await bookRepository.countByCategory(categoryId);
 
     return {
       books,
@@ -65,7 +69,7 @@ class BookService {
     }
 
     const books = await bookRepository.findByAuthor(authorId, skip, take);
-    const total = books.length;
+    const total = await bookRepository.countByAuthor(authorId);
 
     return {
       books,

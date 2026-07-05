@@ -1,11 +1,12 @@
 const prisma = require('../config/database');
+const { SAFE_USER_SELECT } = require('../utils/safeUserSelect');
 
 class BorrowingRepository {
   async create(data) {
     return await prisma.borrowing.create({
       data,
       include: {
-        user: true,
+        user: { select: SAFE_USER_SELECT },
         book: true,
       },
     });
@@ -15,7 +16,7 @@ class BorrowingRepository {
     return await prisma.borrowing.findUnique({
       where: { id },
       include: {
-        user: true,
+        user: { select: SAFE_USER_SELECT },
         book: true,
       },
     });
@@ -51,7 +52,7 @@ class BorrowingRepository {
       skip,
       take,
       include: {
-        user: true,
+        user: { select: SAFE_USER_SELECT },
       },
       orderBy: { borrowDate: 'desc' },
     });
@@ -66,7 +67,7 @@ class BorrowingRepository {
         },
       },
       include: {
-        user: true,
+        user: { select: SAFE_USER_SELECT },
         book: true,
       },
     });
@@ -77,7 +78,7 @@ class BorrowingRepository {
       where: { id },
       data,
       include: {
-        user: true,
+        user: { select: SAFE_USER_SELECT },
         book: true,
       },
     });
@@ -88,7 +89,7 @@ class BorrowingRepository {
       skip,
       take,
       include: {
-        user: true,
+        user: { select: SAFE_USER_SELECT },
         book: true,
       },
       orderBy: { borrowDate: 'desc' },
@@ -97,6 +98,10 @@ class BorrowingRepository {
 
   async countAll() {
     return await prisma.borrowing.count();
+  }
+
+  async countByUserId(userId) {
+    return await prisma.borrowing.count({ where: { userId } });
   }
 
   async countActive() {

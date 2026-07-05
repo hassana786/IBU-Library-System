@@ -5,7 +5,6 @@ class UserRepository {
     return await prisma.user.findMany({
       skip,
       take,
-      include: { role: true },
       select: {
         id: true,
         firstName: true,
@@ -23,7 +22,6 @@ class UserRepository {
   async findById(id) {
     return await prisma.user.findUnique({
       where: { id },
-      include: { role: true },
       select: {
         id: true,
         firstName: true,

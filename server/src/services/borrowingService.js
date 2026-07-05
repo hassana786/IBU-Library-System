@@ -3,6 +3,7 @@ const bookRepository = require('../repositories/bookRepository');
 const fineRepository = require('../repositories/fineRepository');
 const notificationRepository = require('../repositories/notificationRepository');
 const prisma = require('../config/database');
+const { ROLES } = require('../constants');
 
 class BorrowingService {
   async borrowBook(userId, bookId, dueDays = 14) {
@@ -51,10 +52,14 @@ class BorrowingService {
     return borrowing;
   }
 
-  async returnBook(borrowingId) {
+  async returnBook(borrowingId, requestingUser) {
     const borrowing = await borrowingRepository.findById(borrowingId);
     if (!borrowing) {
       throw new Error('Borrowing record not found');
+    }
+
+    if (requestingUser.role.name === ROLES.STUDENT && borrowing.userId !== requestingUser.id) {
+      throw new Error('You are not authorized to return this borrowing');
     }
 
     if (borrowing.status !== 'active') {
@@ -101,7 +106,7 @@ class BorrowingService {
 
   async getBorrowingHistory(userId, skip = 0, take = 10) {
     const borrowings = await borrowingRepository.findByUserId(userId, skip, take);
-    const total = borrowings.length;
+    const total = await borrowingRepository.countByUserId(userId);
 
     return {
       borrowings,

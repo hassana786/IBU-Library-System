@@ -1,5 +1,6 @@
 const fineRepository = require('../repositories/fineRepository');
 const prisma = require('../config/database');
+const { ROLES } = require('../constants');
 
 class FineService {
   async getFinesForUser(userId, skip = 0, take = 10) {
@@ -12,7 +13,7 @@ class FineService {
     }
 
     const fines = await fineRepository.findByUserId(userId, skip, take);
-    const total = fines.length;
+    const total = await fineRepository.countByUserId(userId);
 
     return {
       fines,
@@ -30,10 +31,14 @@ class FineService {
     return await fineRepository.getTotalUnpaidByUserId(userId);
   }
 
-  async payFine(fineId) {
+  async payFine(fineId, requestingUser) {
     const fine = await fineRepository.findById(fineId);
     if (!fine) {
       throw new Error('Fine not found');
+    }
+
+    if (requestingUser.role.name === ROLES.STUDENT && fine.userId !== requestingUser.id) {
+      throw new Error('You are not authorized to pay this fine');
     }
 
     if (fine.status === 'paid') {
@@ -48,7 +53,7 @@ class FineService {
 
   async getAllFines(skip = 0, take = 10) {
     const fines = await fineRepository.findAll(skip, take);
-    const total = fines.length;
+    const total = await fineRepository.countAll();
 
     return {
       fines,

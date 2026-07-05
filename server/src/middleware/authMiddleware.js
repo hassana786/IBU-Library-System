@@ -31,10 +31,7 @@ const authMiddleware = async (req, res, next) => {
       return sendErrorResponse(res, 401, 'Invalid or expired token');
     }
 
-    // 5. Debug (optional but very useful)
-    console.log("DECODED TOKEN:", decoded);
-
-    // 6. Find user in DB
+    // 5. Find user in DB
     const user = await prisma.user.findUnique({
       where: {
         id: decoded.id || decoded.userId, // supports both formats

@@ -1,19 +1,31 @@
-import axios from "axios";
+import apiClient from './api';
 
-const API_URL = "http://localhost:5000/api/auth";
+const login = (email, password) => {
+  return apiClient.post('/auth/login', { email, password });
+};
 
-const getMe = async () => {
-  const token = localStorage.getItem("token");
-
-  const res = await axios.get(`${API_URL}/me`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+const register = (firstName, lastName, email, password, phone, address) => {
+  return apiClient.post('/auth/register', {
+    firstName,
+    lastName,
+    email,
+    password,
+    phone,
+    address,
   });
+};
 
-  return res.data;
+const getMe = () => {
+  return apiClient.get('/auth/me');
+};
+
+const logout = () => {
+  // Stateless JWT auth: nothing to invalidate server-side, kept for API symmetry.
 };
 
 export default {
+  login,
+  register,
   getMe,
+  logout,
 };

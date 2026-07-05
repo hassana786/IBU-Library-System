@@ -10,6 +10,7 @@ import BooksPage from './pages/Books';
 import MyBorrowingsPage from './pages/MyBorrowingsPage';
 import MyReservationsPage from './pages/MyReservationsPage';
 import MyFinesPage from './pages/MyFinesPage';
+import Users from './pages/Users';
 
 function App() {
   return (
@@ -58,6 +59,14 @@ function App() {
             element={
               <ProtectedRoute requiredRole="student">
                 <MyFinesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/users"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <Users />
               </ProtectedRoute>
             }
           />
