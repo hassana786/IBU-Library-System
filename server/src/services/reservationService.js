@@ -2,6 +2,7 @@ const reservationRepository = require('../repositories/reservationRepository');
 const bookRepository = require('../repositories/bookRepository');
 const notificationRepository = require('../repositories/notificationRepository');
 const prisma = require('../config/database');
+const { ROLES } = require('../constants');
 
 class ReservationService {
   async reserveBook(userId, bookId) {
@@ -32,10 +33,14 @@ class ReservationService {
     });
   }
 
-  async cancelReservation(reservationId) {
+  async cancelReservation(reservationId, requestingUser) {
     const reservation = await reservationRepository.findById(reservationId);
     if (!reservation) {
       throw new Error('Reservation not found');
+    }
+
+    if (requestingUser.role.name === ROLES.STUDENT && reservation.userId !== requestingUser.id) {
+      throw new Error('You are not authorized to cancel this reservation');
     }
 
     if (reservation.status === 'cancelled') {
@@ -49,7 +54,7 @@ class ReservationService {
 
   async getReservationsByUser(userId, skip = 0, take = 10) {
     const reservations = await reservationRepository.findByUserId(userId, skip, take);
-    const total = reservations.length;
+    const total = await reservationRepository.countByUserId(userId);
 
     return {
       reservations,
@@ -61,7 +66,7 @@ class ReservationService {
 
   async getReservationsByBook(bookId, skip = 0, take = 10) {
     const reservations = await reservationRepository.findByBookId(bookId, skip, take);
-    const total = reservations.length;
+    const total = await reservationRepository.countByBookId(bookId);
 
     return {
       reservations,

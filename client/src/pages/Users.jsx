@@ -3,7 +3,7 @@ import userService from '../services/userService';
 
 const Users = () => {
   const [users, setUsers] = useState([]);
-  const [formData, setFormData] = useState({ firstName: '', lastName: '', email: '', password: '123', roleId: 1 });
+  const [formData, setFormData] = useState({ firstName: '', lastName: '', email: '', password: 'changeme123', roleId: 3 });
 
   useEffect(() => {
     loadUsers();
@@ -12,7 +12,7 @@ const Users = () => {
   const loadUsers = async () => {
     try {
       const res = await userService.getAllUsers();
-      setUsers(res.data);
+      setUsers(res.data.data.users);
     } catch (error) {
       console.error("Cilad soo akhrinta users-ka", error);
     }
@@ -21,7 +21,7 @@ const Users = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await userService.registerUser(formData);
+      await userService.createUser(formData);
       loadUsers(); // Dib u soo cusboonaysii liiska
     } catch (error) {
       alert("Cilad baa ka dhacday diiwaangelinta.");
@@ -60,9 +60,9 @@ const Users = () => {
             </div>
             <input style={{...styles.input, width: '100%', marginBottom: '10px'}} placeholder="Email-ka rasmiga ah" onChange={(e) => setFormData({...formData, email: e.target.value})} />
             <div style={styles.inputGroup}>
-              <select style={styles.input} onChange={(e) => setFormData({...formData, roleId: parseInt(e.target.value)})}>
-                <option value="1">Arday (Student)</option>
-                <option value="2">Macallin (Teacher)</option>
+              <select style={styles.input} value={formData.roleId} onChange={(e) => setFormData({...formData, roleId: parseInt(e.target.value)})}>
+                <option value="3">Arday (Student)</option>
+                <option value="2">Macallin (Librarian)</option>
               </select>
               <button style={styles.button} type="submit">Diiwaangeli Xubinta</button>
             </div>
@@ -84,7 +84,7 @@ const Users = () => {
                   <td style={styles.td}>{u.id}</td>
                   <td style={styles.td}>{u.firstName} {u.lastName}</td>
                   <td style={styles.td}>{u.email}</td>
-                  <td style={styles.td}>{u.roleId === 1 ? 'Arday' : 'Macallin'}</td>
+                  <td style={styles.td}>{u.role?.name || 'N/A'}</td>
                 </tr>
               ))}
             </tbody>

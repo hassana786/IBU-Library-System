@@ -29,7 +29,7 @@ class ReservationController {
     try {
       const { reservationId } = req.body;
 
-      const reservation = await reservationService.cancelReservation(parseInt(reservationId));
+      const reservation = await reservationService.cancelReservation(parseInt(reservationId), req.user);
 
       await auditLogService.logAction(
         req.user.id,

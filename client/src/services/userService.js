@@ -1,10 +1,10 @@
-import axios from 'axios';
-
-const API_URL = 'http://localhost:5000/api/users';
+import apiClient from './api';
 
 const userService = {
-  getAllUsers: () => axios.get(API_URL),
-  registerUser: (userData) => axios.post(`${API_URL}/register`, userData)
+  getAllUsers: (skip = 0, take = 10) => apiClient.get('/users', { params: { skip, take } }),
+  createUser: (userData) => apiClient.post('/users', userData),
+  updateUser: (id, userData) => apiClient.put(`/users/${id}`, userData),
+  deleteUser: (id) => apiClient.delete(`/users/${id}`),
 };
 
 export default userService;

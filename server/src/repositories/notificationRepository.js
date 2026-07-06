@@ -16,6 +16,12 @@ class NotificationRepository {
     });
   }
 
+  async findById(id) {
+    return await prisma.notification.findUnique({
+      where: { id },
+    });
+  }
+
   async findUnreadByUserId(userId) {
     return await prisma.notification.findMany({
       where: {

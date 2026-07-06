@@ -106,6 +106,26 @@ class BookRepository {
     return await prisma.book.count();
   }
 
+  async countByCategory(categoryId) {
+    return await prisma.book.count({ where: { categoryId } });
+  }
+
+  async countByAuthor(authorId) {
+    return await prisma.book.count({ where: { authorId } });
+  }
+
+  async countSearch(query) {
+    return await prisma.book.count({
+      where: {
+        OR: [
+          { title: { contains: query, mode: 'insensitive' } },
+          { isbn: { contains: query, mode: 'insensitive' } },
+          { author: { name: { contains: query, mode: 'insensitive' } } },
+        ],
+      },
+    });
+  }
+
   async countAvailable() {
     return await prisma.book.count({
       where: {

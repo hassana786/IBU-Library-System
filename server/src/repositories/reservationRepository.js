@@ -1,11 +1,12 @@
 const prisma = require('../config/database');
+const { SAFE_USER_SELECT } = require('../utils/safeUserSelect');
 
 class ReservationRepository {
   async create(data) {
     return await prisma.reservation.create({
       data,
       include: {
-        user: true,
+        user: { select: SAFE_USER_SELECT },
         book: true,
       },
     });
@@ -15,7 +16,7 @@ class ReservationRepository {
     return await prisma.reservation.findUnique({
       where: { id },
       include: {
-        user: true,
+        user: { select: SAFE_USER_SELECT },
         book: true,
       },
     });
@@ -39,7 +40,7 @@ class ReservationRepository {
       skip,
       take,
       include: {
-        user: true,
+        user: { select: SAFE_USER_SELECT },
       },
       orderBy: { reservationDate: 'asc' },
     });
@@ -52,7 +53,7 @@ class ReservationRepository {
         status: 'pending',
       },
       include: {
-        user: true,
+        user: { select: SAFE_USER_SELECT },
       },
       orderBy: { reservationDate: 'asc' },
     });
@@ -73,7 +74,7 @@ class ReservationRepository {
       where: { id },
       data,
       include: {
-        user: true,
+        user: { select: SAFE_USER_SELECT },
         book: true,
       },
     });
@@ -84,7 +85,7 @@ class ReservationRepository {
       skip,
       take,
       include: {
-        user: true,
+        user: { select: SAFE_USER_SELECT },
         book: true,
       },
       orderBy: { reservationDate: 'desc' },
@@ -93,6 +94,14 @@ class ReservationRepository {
 
   async countAll() {
     return await prisma.reservation.count();
+  }
+
+  async countByUserId(userId) {
+    return await prisma.reservation.count({ where: { userId } });
+  }
+
+  async countByBookId(bookId) {
+    return await prisma.reservation.count({ where: { bookId } });
   }
 
   async countByStatus(status) {

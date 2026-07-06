@@ -11,7 +11,7 @@ router.use(authMiddleware);
 
 // Student routes
 router.post('/borrow', authorize(ROLES.STUDENT), borrowController.borrowBook);
-router.post('/return', authorize(ROLES.STUDENT), borrowController.returnBook);
+router.post('/return', authorize(ROLES.STUDENT, ROLES.LIBRARIAN, ROLES.ADMIN), borrowController.returnBook);
 router.get('/my-history', authorize(ROLES.STUDENT), borrowController.getBorrowingHistory);
 router.get('/active', authorize(ROLES.STUDENT), borrowController.getActiveBorrowings);
 

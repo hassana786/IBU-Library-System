@@ -29,7 +29,7 @@ class BorrowingController {
     try {
       const { borrowingId } = req.body;
 
-      const borrowing = await borrowingService.returnBook(parseInt(borrowingId));
+      const borrowing = await borrowingService.returnBook(parseInt(borrowingId), req.user);
 
       await auditLogService.logAction(
         req.user.id,

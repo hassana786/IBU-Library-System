@@ -14,10 +14,8 @@ router.post('/', authorize(ROLES.STUDENT), reservationController.reserveBook);
 router.delete('/', authorize(ROLES.STUDENT), reservationController.cancelReservation);
 router.get('/my-reservations', authorize(ROLES.STUDENT), reservationController.getMyReservations);
 
-// Book reservations
-router.get('/book/:bookId', reservationController.getBookReservations);
-
 // Librarian/Admin routes
+router.get('/book/:bookId', authorize(ROLES.ADMIN, ROLES.LIBRARIAN), reservationController.getBookReservations);
 router.get('/', authorize(ROLES.ADMIN, ROLES.LIBRARIAN), reservationController.getAllReservations);
 router.get('/stats', authorize(ROLES.ADMIN, ROLES.LIBRARIAN), reservationController.getReservationStats);
 

@@ -30,19 +30,29 @@ class NotificationService {
     return await notificationRepository.countUnreadByUserId(userId);
   }
 
-  async markNotificationAsRead(notificationId) {
-    const notification = await notificationRepository.markAsRead(notificationId);
+  async markNotificationAsRead(notificationId, userId) {
+    const notification = await notificationRepository.findById(notificationId);
     if (!notification) {
       throw new Error('Notification not found');
     }
-    return notification;
+    if (notification.userId !== userId) {
+      throw new Error('You are not authorized to access this notification');
+    }
+    return await notificationRepository.markAsRead(notificationId);
   }
 
   async markAllNotificationsAsRead(userId) {
     return await notificationRepository.markAllAsReadByUserId(userId);
   }
 
-  async deleteNotification(notificationId) {
+  async deleteNotification(notificationId, userId) {
+    const notification = await notificationRepository.findById(notificationId);
+    if (!notification) {
+      throw new Error('Notification not found');
+    }
+    if (notification.userId !== userId) {
+      throw new Error('You are not authorized to access this notification');
+    }
     return await notificationRepository.delete(notificationId);
   }
 }

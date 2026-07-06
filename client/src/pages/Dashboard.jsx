@@ -2,13 +2,11 @@ import React from "react";
 import { useAuth } from "../hooks/useAuth";
 
 const Dashboard = () => {
-  const { user, loading } = useAuth();
+  const { user, isLoading } = useAuth();
 
-  if (loading) return <h2>Loading...</h2>;
+  if (isLoading) return <h2>Loading...</h2>;
 
   if (!user) return <h2>No user found</h2>;
-
-  console.log("USER DATA:", user); // 🔥 DEBUG
 
   return (
     <div>
@@ -18,9 +16,9 @@ const Dashboard = () => {
         Welcome: {user.firstName} {user.lastName}
       </h3>
 
-      <p>Role: {user.role?.name}</p>
+      <p>Role: {user.role}</p>
 
-      {user.role?.name === "admin" ? (
+      {user.role === "admin" ? (
         <div>
           <h2>Admin Panel</h2>
         </div>

@@ -43,7 +43,7 @@ class NotificationController {
     try {
       const { notificationId } = req.body;
 
-      await notificationService.markNotificationAsRead(parseInt(notificationId));
+      await notificationService.markNotificationAsRead(parseInt(notificationId), req.user.id);
 
       return sendSuccessResponse(res, 200, 'Notification marked as read');
     } catch (error) {
@@ -67,7 +67,7 @@ class NotificationController {
     try {
       const { notificationId } = req.body;
 
-      await notificationService.deleteNotification(parseInt(notificationId));
+      await notificationService.deleteNotification(parseInt(notificationId), req.user.id);
 
       return sendSuccessResponse(res, 200, 'Notification deleted');
     } catch (error) {

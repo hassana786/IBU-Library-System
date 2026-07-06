@@ -40,7 +40,7 @@ class AuthorService {
   }
 
   async updateAuthor(id, data) {
-    const author = await authorRepository.getAuthorById(id);
+    const author = await authorRepository.findById(id);
     if (!author) {
       throw new Error('Author not found');
     }
